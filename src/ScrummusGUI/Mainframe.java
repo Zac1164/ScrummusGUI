@@ -4,17 +4,30 @@
  */
 package ScrummusGUI;
 
-/**
- *
- * @author zachdaniels
- */
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import DomainLibraries.*;
+import java.util.*;
+import com.google.common.collect.TreeMultimap;
+import com.google.common.collect.Ordering;
+
 public class Mainframe extends javax.swing.JFrame {
 
+    private Manager database;
+    private DefaultTableModel model;
+    private int selectedMedia;
+    
     /**
      * Creates new form Mainframe
      */
     public Mainframe() {
         initComponents();
+        database = new Manager("song.txt","video.txt");
+        database.main(new String[0]);
+        model = new DefaultTableModel();
+        MediaTable.setModel(model);
+        selectedMedia = 0;
+        sortName();
     }
 
     /**
@@ -28,13 +41,13 @@ public class Mainframe extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        FilterList = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        MediaTable = new javax.swing.JTable();
+        PlaylistsLabel = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        jLabel2 = new javax.swing.JLabel();
+        LibraryList = new javax.swing.JList();
+        LibraryLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 153));
@@ -43,37 +56,53 @@ public class Mainframe extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(153, 204, 255));
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Most Played", "Most Recent", "Latest Added" };
+        FilterList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "None", "Most Played", "Most Recent" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        FilterList.setSelectedIndex(0);
+        FilterList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                FilterListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(FilterList);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        MediaTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Song", "Artist", "Time", "Album", "Genre", "Playlist"
+                "Song", "Artist", "Time", "Album", "Genre"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        MediaTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                MediaTablePropertyChange(evt);
+            }
+        });
+        jScrollPane2.setViewportView(MediaTable);
 
-        jLabel1.setText("Playlists");
+        PlaylistsLabel.setText("Filters");
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
+        LibraryList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Music", "Video" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jList2.setSelectedIndex(0);
-        jScrollPane3.setViewportView(jList2);
+        LibraryList.setSelectedIndex(0);
+        LibraryList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                LibraryListValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(LibraryList);
 
-        jLabel2.setText("Library");
+        LibraryLabel.setText("Library");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -83,9 +112,9 @@ public class Mainframe extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 205, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1)
+                    .add(PlaylistsLabel)
                     .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 205, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel2))
+                    .add(LibraryLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 852, Short.MAX_VALUE)
                 .addContainerGap())
@@ -97,11 +126,11 @@ public class Mainframe extends javax.swing.JFrame {
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                     .add(jScrollPane2)
                     .add(jPanel1Layout.createSequentialGroup()
-                        .add(jLabel2)
+                        .add(LibraryLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel1)
+                        .add(PlaylistsLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -120,6 +149,29 @@ public class Mainframe extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void LibraryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_LibraryListValueChanged
+        if(LibraryList.getSelectedIndex() == 0){
+            selectedMedia = 0;            
+        }
+        else if(LibraryList.getSelectedIndex() == 1){
+            selectedMedia = 1;
+        }
+        sortName();
+    }//GEN-LAST:event_LibraryListValueChanged
+
+    private void MediaTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_MediaTablePropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MediaTablePropertyChange
+
+    private void FilterListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_FilterListValueChanged
+        if(FilterList.getSelectedValue().equals("None")){
+            sortName();
+        }
+        else if(FilterList.getSelectedValue().equals("Most Played")){
+            sortPlayCount();
+        }
+    }//GEN-LAST:event_FilterListValueChanged
 
     /**
      * @param args the command line arguments
@@ -155,15 +207,102 @@ public class Mainframe extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void sortName(){
+        //songs
+        model.setRowCount(0);
+        model.setColumnCount(0);
+        if(selectedMedia == 0){
+            model.addColumn("Song");
+            model.addColumn("Artist");
+            model.addColumn("Time");
+            model.addColumn("Album");
+            model.addColumn("Genre");
+            ArrayList<Song> songs = database.getAllSongs();
+            TreeMultimap<String,Song> sortedSongs = TreeMultimap.create(Ordering.natural(), Ordering.natural());
+            for(int i = 0; i < songs.size(); i++){
+                sortedSongs.put(songs.get(i).getName(),songs.get(i));
+            }
+            Collection<Song> sortedSongs2 = (Collection)sortedSongs.values();
+            int i = 0;
+            for(Song song: sortedSongs2){
+                model.addRow(new Object[]{song.getName(),song.getArtist(),song.getDuration(),song.getAlbum(),song.getGenre()});
+                i++;
+            }
+            
+        }
+        //videos
+        else{
+            model.addColumn("Video");
+            model.addColumn("Author");
+            model.addColumn("Time");
+            model.addColumn("Genre");
+            ArrayList<Video> videos = database.getAllVideos();
+            TreeMultimap<String,Video> sortedVideos = TreeMultimap.create(Ordering.natural(), Ordering.natural());
+            for(int i = 0; i < videos.size(); i++){
+                sortedVideos.put(videos.get(i).getName(),videos.get(i));
+            }
+            Collection<Video> sortedVideos2 = (Collection)sortedVideos.values();
+            int i = 0;
+            for(Video video: sortedVideos2){
+                model.addRow(new Object[]{video.getName(),video.getAuthor(),video.getDuration(),video.getGenre()});
+                i++;
+            }
+        }
+    }
+        
+    private void sortPlayCount(){
+        //songs
+        model.setRowCount(0);
+        model.setColumnCount(0);
+        if(selectedMedia == 0){
+            model.addColumn("Song");
+            model.addColumn("Artist");
+            model.addColumn("Time");
+            model.addColumn("Album");
+            model.addColumn("Genre");
+            ArrayList<Song> songs = database.getAllSongs();
+            TreeMultimap<Integer,Song> sortedSongs = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
+            for(int i = 0; i < songs.size(); i++){
+                sortedSongs.put(songs.get(i).getPlayCount(),songs.get(i));
+            }
+            Collection<Song> sortedSongs2 = (Collection)sortedSongs.values();
+            int i = 0;
+            for(Song song: sortedSongs2){
+                model.addRow(new Object[]{song.getName(),song.getArtist(),song.getDuration(),song.getAlbum(),song.getGenre()});
+                i++;
+            }
+            
+        }
+        //videos
+        else{
+            model.addColumn("Video");
+            model.addColumn("Author");
+            model.addColumn("Time");
+            model.addColumn("Genre");
+            ArrayList<Video> videos = database.getAllVideos();
+            TreeMultimap<Integer,Video> sortedVideos = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
+            for(int i = 0; i < videos.size(); i++){
+                sortedVideos.put(videos.get(i).getPlayCount(),videos.get(i));
+            }
+            Collection<Video> sortedVideos2 = (Collection)sortedVideos.values();
+            int i = 0;
+            for(Video video: sortedVideos2){
+                model.addRow(new Object[]{video.getName(),video.getAuthor(),video.getDuration(),video.getGenre()});
+                i++;
+            }
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
+    private javax.swing.JList FilterList;
+    private javax.swing.JLabel LibraryLabel;
+    private javax.swing.JList LibraryList;
+    private javax.swing.JTable MediaTable;
+    private javax.swing.JLabel PlaylistsLabel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
