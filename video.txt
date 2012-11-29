@@ -1,7 +1,7 @@
-Development Arrested#@00:20:45#@0#@vpath3#@#@#@#@0#@0#@#@1080#@Tv Episode#@Mitch Hurwitz#@3#@13#@Thu Nov 29 17:57:30 EST 2012
-Some Random Video#@00:04:45#@0#@vpath4#@#@#@#@0#@0#@#@1080#@Tv Episode#@Michael George#@4#@2#@Thu Nov 29 17:57:30 EST 2012
+Development Arrested#@00:20:45#@0#@vpath3#@#@#@#@0#@1990#@Comedy#@1080#@Tv Episode#@Mitch Hurwitz#@3#@13#@Thu Nov 29 18:21:58 EST 2012
+Some Random Video#@00:04:45#@0#@vpath4#@#@#@#@0#@1992#@Horror#@1080#@Tv Episode#@Michael George#@4#@2#@Thu Nov 29 18:21:58 EST 2012
 
 
-Some Random Video 2: Electric Boogaloo#@00:04:45#@0#@vpath1#@#@#@#@0#@0#@#@1080#@Tv Episode#@The Honorable Firstname Lastname#@1#@4#@Thu Nov 29 17:57:30 EST 2012
-Another Random Video#@00:14:25#@0#@vpath2#@#@#@#@0#@0#@#@1080#@Tv Episode#@Tim Arnold#@1#@3#@Thu Nov 29 17:57:30 EST 2012
-Some Random Movie#@00:04:45#@0#@vpath5#@#@#@#@0#@0#@#@1080#@Movie#@Jim Scott#@0#@0#@Thu Nov 29 17:57:30 EST 2012
+Some Random Video 2: Electric Boogaloo#@00:04:45#@0#@vpath1#@#@#@#@0#@1984#@Comedy#@1080#@Tv Episode#@The Honorable Firstname Lastname#@1#@4#@Thu Nov 29 18:21:58 EST 2012
+Another Random Video#@00:14:25#@0#@vpath2#@#@#@#@0#@1993#@Comedy#@1080#@Tv Episode#@Tim Arnold#@1#@3#@Thu Nov 29 18:21:58 EST 2012
+Some Random Movie#@00:04:45#@0#@vpath5#@#@#@#@0#@1901#@Unclassifiable#@1080#@Movie#@Jim Scott#@0#@0#@Thu Nov 29 18:21:59 EST 2012
