@@ -5,6 +5,7 @@
 package ScrummusGUI;
 
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.DefaultTableModel;
 import DomainLibraries.*;
 import java.util.*;
@@ -26,6 +27,7 @@ public class Mainframe extends javax.swing.JFrame {
         database.main(new String[0]);
         model = new DefaultTableModel();
         MediaTable.setModel(model);
+        MediaTable.setAutoCreateRowSorter(true);
         selectedMedia = 0;
         sortName();
     }
@@ -80,6 +82,11 @@ public class Mainframe extends javax.swing.JFrame {
                 "Song", "Artist", "Time", "Album", "Genre"
             }
         ));
+        MediaTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MediaTableMouseClicked(evt);
+            }
+        });
         MediaTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 MediaTablePropertyChange(evt);
@@ -152,12 +159,13 @@ public class Mainframe extends javax.swing.JFrame {
 
     private void LibraryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_LibraryListValueChanged
         if(LibraryList.getSelectedIndex() == 0){
-            selectedMedia = 0;            
+            selectedMedia = 0;
         }
         else if(LibraryList.getSelectedIndex() == 1){
             selectedMedia = 1;
         }
         sortName();
+        FilterList.setSelectedIndex(0);
     }//GEN-LAST:event_LibraryListValueChanged
 
     private void MediaTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_MediaTablePropertyChange
@@ -171,7 +179,14 @@ public class Mainframe extends javax.swing.JFrame {
         else if(FilterList.getSelectedValue().equals("Most Played")){
             sortPlayCount();
         }
+        else if(FilterList.getSelectedValue().equals("Most Recent")){
+            sortDate();
+        }
     }//GEN-LAST:event_FilterListValueChanged
+
+    private void MediaTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MediaTableMouseClicked
+
+    }//GEN-LAST:event_MediaTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -284,6 +299,49 @@ public class Mainframe extends javax.swing.JFrame {
             TreeMultimap<Integer,Video> sortedVideos = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
             for(int i = 0; i < videos.size(); i++){
                 sortedVideos.put(videos.get(i).getPlayCount(),videos.get(i));
+            }
+            Collection<Video> sortedVideos2 = (Collection)sortedVideos.values();
+            int i = 0;
+            for(Video video: sortedVideos2){
+                model.addRow(new Object[]{video.getName(),video.getAuthor(),video.getDuration(),video.getGenre()});
+                i++;
+            }
+        }
+    }
+    
+    private void sortDate(){
+        //songs
+        model.setRowCount(0);
+        model.setColumnCount(0);
+        if(selectedMedia == 0){
+            model.addColumn("Song");
+            model.addColumn("Artist");
+            model.addColumn("Time");
+            model.addColumn("Album");
+            model.addColumn("Genre");
+            ArrayList<Song> songs = database.getAllSongs();
+            TreeMultimap<Date,Song> sortedSongs = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
+            for(int i = 0; i < songs.size(); i++){
+                sortedSongs.put(songs.get(i).getDateAdded(),songs.get(i));
+            }
+            Collection<Song> sortedSongs2 = (Collection)sortedSongs.values();
+            int i = 0;
+            for(Song song: sortedSongs2){
+                model.addRow(new Object[]{song.getName(),song.getArtist(),song.getDuration(),song.getAlbum(),song.getGenre()});
+                i++;
+            }
+            
+        }
+        //videos
+        else{
+            model.addColumn("Video");
+            model.addColumn("Author");
+            model.addColumn("Time");
+            model.addColumn("Genre");
+            ArrayList<Video> videos = database.getAllVideos();
+            TreeMultimap<Date,Video> sortedVideos = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
+            for(int i = 0; i < videos.size(); i++){
+                sortedVideos.put(videos.get(i).getDateAdded(),videos.get(i));
             }
             Collection<Video> sortedVideos2 = (Collection)sortedVideos.values();
             int i = 0;
